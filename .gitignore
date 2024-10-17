@@ -1,0 +1,10 @@
+# Ignore the plugin installations
+nvim/.local/share/nvim/lazy/
+# Ignore the cache directory
+nvim/.local/state/nvim/
+
+# Ignore backup and swap files
+.swap/
+.backup/
+.undo/
+
