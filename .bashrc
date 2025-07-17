@@ -153,8 +153,23 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
 
-function lazygit() {
-	git add .
-	git commit -a -m "$1"
-	git push
-}
+DOCKER_DISTRO="Ubuntu"
+DOCKER_DIR=/mnt/wsl/shared-docker
+#DOCKER_SOCK="$DOCKER_DIR/docker.sock"
+#export DOCKER_HOST="unix://$DOCKER_SOCK"
+export DOCKER_HOST=unix:///var/run/docker.sock
+
+# this is not according to kind-wsl-jedox documentation, but I could only find the .sock file there.
+DOCKER_SOCK=unix:///var/run/docker.sock
+if [ ! -S "$DOCKER_SOCK" ]; then
+	mkdir -pm o=,ug=rwx "$DOCKER_DIR"
+	chgrp docker "$DOCKER_DIR"
+	/mnt/c/Windows/System32/wsl.exe -d $DOCKER_DISTRO sh -c "nohup sudo -b dockerd < /dev/null > $DOCKER_DIR/dockerd.log 2>&1"
+fi
+
+# Load Angular CLI autocompletion.
+source <(ng completion script)
+
+# bun
+export BUN_INSTALL="$HOME/.local/share/reflex/bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
